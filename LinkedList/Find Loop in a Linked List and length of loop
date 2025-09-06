@@ -1,0 +1,114 @@
+ * ## The Problem
+ * Given the head of a singly linked list, we need to:
+ * 1. Determine if the list contains a loop (or cycle).
+ * 2. If a loop exists, return the number of nodes in that loop.
+ * 3. If no loop exists, return 0.
+ *
+ * ## The Algorithm: Floyd's Tortoise and Hare 🐢🐇
+ * The core idea is to use two pointers that traverse the list at different speeds.
+ * A 'slow' pointer (the tortoise) moves one step at a time, while a 'fast'
+ * pointer (the hare) moves two steps at a time.
+ *
+ * ### Step 1: Cycle Detection
+ * We start both pointers at the head of the list. In a loop, we advance the
+ * pointers.
+ * - If the fast pointer reaches the end of the list (nullptr), no cycle exists.
+ * - If the fast pointer eventually meets the slow pointer, a cycle is confirmed.
+ *
+ * ### Step 2: Counting the Loop Length
+ * Once a cycle is detected at the meeting point:
+ * 1. We fix one pointer at the meeting node.
+ * 2. We traverse the loop with another pointer, starting from the next node,
+ * counting the steps until we return to the meeting node.
+ * 3. This count gives us the length of the loop.
+ *
+ * ## Complexity Analysis
+ * - Time Complexity: O(N), where N is the number of nodes in the list.
+ * - Space Complexity: O(1), as we only use a few extra pointers.
+ *
+ ******************************************************************************/
+
+#include <iostream>
+
+// Definition for a singly-linked list node.
+struct Node {
+    int data;
+    Node *next;
+    
+    // Constructor
+    Node(int val) {
+        data = val;
+        next = nullptr;
+    }
+};
+
+/**
+ * @brief Determines if a linked list contains a loop and returns its length.
+ * @param head A pointer to the head node of the linked list.
+ * @return The number of nodes in the loop, or 0 if no loop exists.
+ */
+int countNodesinLoop(Node *head) {
+    // Initialize two pointers, slow and fast, at the head
+    Node *slow = head;
+    Node *fast = head;
+
+    // Part 1: Detect the loop using Floyd's algorithm
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;          // Move slow pointer by one
+        fast = fast->next->next;    // Move fast pointer by two
+        
+        // If pointers meet, a loop is detected
+        if (slow == fast) {
+            // Part 2: Count the nodes in the loop
+            int count = 1;
+            Node *temp = slow->next;
+            
+            // Traverse the loop until we get back to the meeting point
+            while (temp != slow) {
+                temp = temp->next;
+                count++;
+            }
+            return count;
+        }
+    }
+
+    // If the while loop finished without the pointers meeting, no loop exists
+    return 0;
+}
+
+// Main function to demonstrate the usage of countNodesinLoop
+int main() {
+    std::cout << "--- Linked List Cycle Detection Demo ---" << std::endl;
+
+    // --- Test Case 1: A list with a loop ---
+    std::cout << "\nTest Case 1: List with a loop" << std::endl;
+    Node *head1 = new Node(1);
+    head1->next = new Node(2);
+    Node *loopNode = new Node(3);
+    head1->next->next = loopNode;
+    head1->next->next->next = new Node(4);
+    head1->next->next->next->next = new Node(5);
+    head1->next->next->next->next->next = loopNode; // Creates the loop 3->4->5->3
+
+    int loopLength1 = countNodesinLoop(head1);
+    std::cout << "Result: Loop found with length: " << loopLength1 << std::endl; // Expected: 3
+
+    // --- Test Case 2: A list with no loop ---
+    std::cout << "\nTest Case 2: List without a loop" << std::endl;
+    Node *head2 = new Node(10);
+    head2->next = new Node(20);
+    head2->next->next = new Node(30);
+
+    int loopLength2 = countNodesinLoop(head2);
+    if (loopLength2 > 0) {
+         std::cout << "Result: Loop found with length: " << loopLength2 << std::endl;
+    } else {
+         std::cout << "Result: No loop found." << std::endl; // Expected: No loop
+    }
+
+    // Note: In a real application, you would need to deallocate the memory
+    // for the linked list nodes to prevent memory leaks. This is omitted
+    // for simplicity in this example.
+
+    return 0;
+}
