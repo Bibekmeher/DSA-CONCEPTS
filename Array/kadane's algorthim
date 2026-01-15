@@ -1,1 +1,47 @@
+Here’s a **slightly detailed but still revision-friendly** version 👍
 
+```md
+## Kadane’s Algorithm (Revision Notes)
+
+**Problem:**  
+Find the **maximum sum of a contiguous subarray**.
+
+**Core Idea:**  
+Maintain a running sum of the subarray.  
+If the sum becomes negative, discard it and start fresh.
+
+**Why it works:**  
+A negative sum will only reduce the sum of any future subarray.
+
+**Pseudocode:**
+```
+
+currentSum = 0
+maxSum = -∞
+
+for each element x in array:
+currentSum = currentSum + x
+maxSum = max(maxSum, currentSum)
+
+```
+if currentSum < 0:
+    currentSum = 0
+```
+
+return maxSum
+
+```
+
+**Key Points:**
+- Handles positive and negative numbers
+- Works even when all elements are negative
+- Linear scan of the array
+
+**Time Complexity:** `O(n)`  
+**Space Complexity:** `O(1)`
+
+**Example:**  
+`[-2, 1, -3, 4, -1, 2, 1] → 6`
+```
+
+If you want, I can also give a **1-line intuition for interviews** or a **dry run table**.
